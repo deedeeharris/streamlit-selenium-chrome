@@ -34,9 +34,9 @@ with st.echo():
     link = st.text_input("Enter the link:")
     if st.button("Scrape"):
         if link:
-            scrape_page(link)
+            driver.get(link)
         else:
             st.warning("Please enter a link.")
-    driver.get(link)
+    
 
     st.code(driver.page_source)
