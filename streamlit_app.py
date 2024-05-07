@@ -1,4 +1,12 @@
 import streamlit as st
+from selenium import webdriver
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.utils import ChromeType
 
 """
 ## Web scraping on Streamlit Cloud with Selenium
@@ -10,27 +18,29 @@ This is a minimal, reproducible example of how to scrape the web with Selenium a
 Fork this repo, and edit `/streamlit_app.py` to customize this app to your heart's desire. :heart:
 """
 
-with st.echo():
-    from selenium import webdriver
-    from selenium.webdriver.chrome.options import Options
-    from selenium.webdriver.chrome.service import Service
-    from webdriver_manager.chrome import ChromeDriverManager
-    from webdriver_manager.core.os_manager import ChromeType
-
-    @st.cache_resource
-    def get_driver():
-        return webdriver.Chrome(
-            service=Service(
-                ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()
-            ),
-            options=options,
-        )
-
+def scrape_page(link):
     options = Options()
     options.add_argument("--disable-gpu")
     options.add_argument("--headless")
 
-    driver = get_driver()
-    driver.get("https://serguide.maccabi4u.co.il/heb/doctors/doctorssearchresults/?City=3651&Field=006&OrderBy=4&PageNumber=1&RequestId=32ef0a5c-4659-2eb0-57b2-5cefc1c3075c&Source=SearchPage")
+    driver = webdriver.Chrome(
+        service=Service(ChromeDriverManager(chrome_type=ChromeType.CHROMIUM).install()),
+        options=options,
+    )
+    
+    driver.get(link)
 
-    st.code(driver.page_source)
+    try:
+        WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'ד''ר')]")))
+        st.code(driver.page_source)
+    except Exception as e:
+        st.error(f"Error: {e}")
+    finally:
+        driver.quit()
+
+link = st.text_input("Enter the link:")
+if st.button("Scrape"):
+    if link:
+        scrape_page(link)
+    else:
+        st.warning("Please enter a link.")
