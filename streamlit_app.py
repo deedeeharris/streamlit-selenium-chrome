@@ -16,7 +16,6 @@ with st.echo():
     from selenium.webdriver.chrome.service import Service
     from webdriver_manager.chrome import ChromeDriverManager
     from webdriver_manager.core.os_manager import ChromeType
-    from selenium.webdriver.support.ui import WebDriverWait
 
     @st.cache_resource
     def get_driver():
@@ -32,20 +31,12 @@ with st.echo():
     options.add_argument("--headless")
 
     driver = get_driver()
-
-
-    def scrape_page(link):
-        driver.get(link)
-        try:
-            WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, "//*[contains(text(), 'ד''ר')]")))
-            st.code(driver.page_source)
-        except Exception as e:
-            st.error(f"Error: {e}")
-
-
     link = st.text_input("Enter the link:")
     if st.button("Scrape"):
         if link:
             scrape_page(link)
         else:
             st.warning("Please enter a link.")
+    driver.get(link)
+
+    st.code(driver.page_source)
