@@ -41,8 +41,7 @@ with st.echo():
             st.code(driver.page_source)
         except Exception as e:
             st.error(f"Error: {e}")
-        finally:
-            driver.quit()
+
 
     link = st.text_input("Enter the link:")
     if st.button("Scrape"):
