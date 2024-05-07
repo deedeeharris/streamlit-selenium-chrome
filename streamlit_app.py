@@ -31,6 +31,6 @@ with st.echo():
     options.add_argument("--headless")
 
     driver = get_driver()
-    driver.get("http://example.com")
+    driver.get("https://serguide.maccabi4u.co.il/heb/doctors/doctorssearchresults/?City=3651&Field=006&OrderBy=4&PageNumber=1&RequestId=32ef0a5c-4659-2eb0-57b2-5cefc1c3075c&Source=SearchPage")
 
     st.code(driver.page_source)
