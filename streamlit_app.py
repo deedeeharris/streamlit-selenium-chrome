@@ -31,12 +31,6 @@ with st.echo():
     options.add_argument("--headless")
 
     driver = get_driver()
-    link = st.text_input("Enter the link:")
-    if st.button("Scrape"):
-        if link:
-            driver.get(link)
-        else:
-            st.warning("Please enter a link.")
-    
+    driver.get("http://example.com")
 
     st.code(driver.page_source)
